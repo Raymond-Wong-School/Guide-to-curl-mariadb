@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission</title>
+</head>
+<body>
+
+<form action="post.php" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+    <input type="submit" value="Submit">
+</form>
+
+<!-- Section to display the response -->
+<div>
+    <?php
+    // Check if there's a response to display
+    if (isset($_GET['response'])) {
+        // Display the response passed from post.php
+        echo nl2br(htmlspecialchars($_GET['response']));
+    }
+    ?>
+</div>
+
+</body>
+</html>
