@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $conn->close();
 
     // Redirect back to index.html with the response
-    header("Location: index.html?response=" . urlencode($responseToDisplay));
+    header("Location: response.php?response=" . urlencode($responseToDisplay));
     exit;
 
 } else {
