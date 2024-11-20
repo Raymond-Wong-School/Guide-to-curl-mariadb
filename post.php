@@ -1,38 +1,47 @@
 <?php
-// "Winry, is it a POST request?" - Edward Elric
-// "Yes, Al! We're good to go." - Winry Rockbell
+// Database configuration
+$servername = "localhost";
+$username = "postman"; // Replace with your new username
+$password = "postman"; // Replace with your new password
+$dbname = "postmanlogs";
+$port = 8036; // Specify the port
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // "Winry, let's get the form data." - Edward Elric
-    // "Got it, Al! Here you go." - Winry Rockbell
+    // Get the form data
     $formData = $_POST;
+    $name = $formData['name'];
+    $email = $formData['email'];
+    $curl_agent = $_SERVER['HTTP_USER_AGENT'];
 
-    // "Al, time to send this data to Postman Echo." - Winry Rockbell
-    // "Right, Winry! Let's do it." - Edward Elric
-    $url = "https://postman-echo.com/post";
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($formData));
-    $response = curl_exec($ch);
-    curl_close($ch);
+    // Prepare the SQL statement
+    $stmt = $conn->prepare("INSERT INTO my_table (name, email, curl_agent) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $name, $email, $curl_agent);
 
-    // "Winry, let's decode the JSON response." - Edward Elric
-    // "Sure, Al! Decoding it now." - Winry Rockbell
-    $responseData = json_decode($response, true);
+    // Execute the statement
+    if ($stmt->execute()) {
+        // "Winry, the data was inserted successfully!" - Edward Elric
+        // "Great job, Al! Let's send the response back." - Winry Rockbell
+        $responseToDisplay = "Data inserted successfully!";
+    } else {
+        // "Winry, something went wrong with the database insertion." - Edward Elric
+        // "Oh no, Al! Let's check the error." - Winry Rockbell
+        $responseToDisplay = "Error inserting data: " . $stmt->error;
+    }
 
-    // "Winry, we need to store this data in the database, right?" - Edward Elric
-    // "Of course, Al! But first, let's make sure it doesn't explode." - Winry Rockbell
+    // Close the statement and connection
+    $stmt->close();
+    $conn->close();
 
-    // "Winry, let's prepare the response to be displayed on index.html." - Edward Elric
-    // "Got it, Al! Here's the response." - Winry Rockbell
-    $responseToDisplay = "Postman Echo Response:\n";
-    $responseToDisplay .= "Raw Response:\n";
-    $responseToDisplay .= htmlspecialchars($response) . "\n";
-    $responseToDisplay .= "Parsed Response:\n";
-    $responseToDisplay .= print_r($responseData, true);
-
-    // "Winry, let's redirect back to index.html with the response." - Edward Elric
-    // "Alright, Al! Redirecting now." - Winry Rockbell
+    // Redirect back to index.html with the response
     header("Location: index.html?response=" . urlencode($responseToDisplay));
     exit;
 
