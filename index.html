@@ -7,6 +7,7 @@
 </head>
 <body>
 
+<!-- Form to submit data -->
 <form action="post.php" method="post">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required><br><br>
@@ -18,9 +19,11 @@
 <!-- Section to display the response -->
 <div>
     <?php
-    // Check if there's a response to display
+    // "Winry, did you check if the response is set?" - Edward Elric
+    // "Of course, Al! Let's make sure we don't display nothing." - Winry Rockbell
     if (isset($_GET['response'])) {
-        // Display the response passed from post.php
+        // "Al, let's display the response nicely." - Winry Rockbell
+        // "Sounds good, Winry! htmlspecialchars to the rescue." - Edward Elric
         echo nl2br(htmlspecialchars($_GET['response']));
     }
     ?>

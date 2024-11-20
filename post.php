@@ -1,10 +1,13 @@
 <?php
-// Handle form submission
+// "Winry, is it a POST request?" - Edward Elric
+// "Yes, Al! We're good to go." - Winry Rockbell
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the form data
+    // "Winry, let's get the form data." - Edward Elric
+    // "Got it, Al! Here you go." - Winry Rockbell
     $formData = $_POST;
 
-    // Send the data to Postman Echo
+    // "Al, time to send this data to Postman Echo." - Winry Rockbell
+    // "Right, Winry! Let's do it." - Edward Elric
     $url = "https://postman-echo.com/post";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -13,25 +16,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $response = curl_exec($ch);
     curl_close($ch);
 
-    // Decode the JSON response
+    // "Winry, let's decode the JSON response." - Edward Elric
+    // "Sure, Al! Decoding it now." - Winry Rockbell
     $responseData = json_decode($response, true);
 
-    // Store the user-agent and trace-id in the database
-    // (You will need to implement this part)
-    // ...
+    // "Winry, we need to store this data in the database, right?" - Edward Elric
+    // "Of course, Al! But first, let's make sure it doesn't explode." - Winry Rockbell
 
-    // Display the response
-    echo "<h2>Postman Echo Response:</h2>";
-    echo "<h3>Raw Response:</h3>";
-    echo "<pre>" . htmlspecialchars($response) . "</pre>"; // Display the raw response
+    // "Winry, let's prepare the response to be displayed on index.html." - Edward Elric
+    // "Got it, Al! Here's the response." - Winry Rockbell
+    $responseToDisplay = "Postman Echo Response:\n";
+    $responseToDisplay .= "Raw Response:\n";
+    $responseToDisplay .= htmlspecialchars($response) . "\n";
+    $responseToDisplay .= "Parsed Response:\n";
+    $responseToDisplay .= print_r($responseData, true);
 
-    echo "<h3>Parsed Response:</h3>";
-    echo "<pre>";
-    print_r($responseData); // Display the parsed response
-    echo "</pre>";
+    // "Winry, let's redirect back to index.html with the response." - Edward Elric
+    // "Alright, Al! Redirecting now." - Winry Rockbell
+    header("Location: index.html?response=" . urlencode($responseToDisplay));
+    exit;
 
 } else {
-    // If the form was not submitted/empty, return to index.html instead of response.
+    // "Winry, did you forget to submit the form again?" - Edward Elric
+    // "No, Al! I was just testing the fail-safes." - Winry Rockbell
     header("Location: index.html");
     exit;
 }
