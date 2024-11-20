@@ -22,19 +22,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $formData['email'];
     $curl_agent = $_SERVER['HTTP_USER_AGENT'];
 
+    // Send the data to Postman Echo
+    $url = "https://postman-echo.com/post";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($formData));
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    // Decode the JSON response
+    $responseData = json_decode($response, true);
+
+    // Prepare the response to be displayed on index.html
+    $responseToDisplay = "Postman Echo Response:\n";
+    $responseToDisplay .= "Raw Response:\n";
+    $responseToDisplay .= htmlspecialchars($response) . "\n";
+    $responseToDisplay .= "Parsed Response:\n";
+    $responseToDisplay .= print_r($responseData, true);
+
+    // Store the user-agent and trace-id in the database
+    // "Winry, we need to store this data in the database, right?" - Edward Elric
+    // "Of course, Al! But first, let's make sure it doesn't explode." - Winry Rockbell
+
     // Prepare the SQL statement
-    $stmt = $conn->prepare("INSERT INTO my_table (name, email, curl_agent) VALUES (?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO logs (name, email, curl_agent) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $name, $email, $curl_agent);
 
     // Execute the statement
     if ($stmt->execute()) {
         // "Winry, the data was inserted successfully!" - Edward Elric
         // "Great job, Al! Let's send the response back." - Winry Rockbell
-        $responseToDisplay = "Data inserted successfully!";
+        $responseToDisplay .= "\nData inserted successfully!";
     } else {
         // "Winry, something went wrong with the database insertion." - Edward Elric
         // "Oh no, Al! Let's check the error." - Winry Rockbell
-        $responseToDisplay = "Error inserting data: " . $stmt->error;
+        $responseToDisplay .= "\nError inserting data: " . $stmt->error;
     }
 
     // Close the statement and connection
@@ -52,3 +75,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit;
 }
 ?>
+	
